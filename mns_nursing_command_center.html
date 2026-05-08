@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MNS Nursing Dream Command Center</title>
+  <style>
+    :root {
+      --bg: #fff3f8;
+      --bg-soft: #ffe2ef;
+      --card: rgba(255, 255, 255, 0.72);
+      --card-strong: rgba(255, 255, 255, 0.92);
+      --border: rgba(213, 85, 135, 0.18);
+      --text: #351827;
+      --muted: #755266;
+      --muted-2: #a37a91;
+      --pink: #ff77ad;
+      --rose: #ff9ac7;
+      --purple: #a978ff;
+      --peach: #ffc3a0;
+      --green: #39c58f;
+      --yellow: #ffd166;
+      --danger: #f05f8d;
+      --shadow: 0 24px 70px rgba(198, 71, 123, 0.22);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 119, 173, 0.32), transparent 30%),
+        radial-gradient(circle at 92% 6%, rgba(169, 120, 255, 0.25), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(255, 195, 160, 0.35), transparent 38%),
+        linear-gradient(135deg, #fff8fb 0%, #ffe6f1 45%, #f8ecff 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 119, 173, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 119, 173, 0.09) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent 82%);
+      z-index: -2;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+
+    .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+    .nav {
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+      margin: 12px auto 0;
+      width: min(1180px, calc(100% - 24px));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 16px 40px rgba(185, 65, 115, 0.16);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; }
+    .brand-icon {
+      width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--purple)); color: white;
+      box-shadow: 0 0 24px rgba(255,119,173,0.38);
+    }
+
+    .nav-links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-links a { color: var(--muted); font-size: 0.84rem; padding: 9px 12px; border-radius: 999px; transition: .24s ease; }
+    .nav-links a:hover { color: var(--text); background: rgba(255,119,173,.12); }
+
+    .btn {
+      border: 1px solid var(--border); cursor: pointer; padding: 12px 17px; border-radius: 999px;
+      color: var(--text); background: rgba(255,255,255,.72); transition: .24s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.02); }
+    .btn-primary { color: white; border: 0; font-weight: 850; background: linear-gradient(135deg, var(--pink), var(--purple)); box-shadow: 0 16px 30px rgba(255,119,173,.25); }
+    .danger-btn { color: var(--danger); border-color: rgba(240,95,141,.24); background: rgba(240,95,141,.08); }
+
+    .hero { min-height: 86vh; display: grid; align-items: center; padding: 86px 0 64px; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
+      color: var(--muted); background: rgba(255,255,255,.66); border: 1px solid var(--border); margin-bottom: 18px;
+    }
+    .hero h1 { font-size: clamp(2.45rem, 7vw, 6.1rem); line-height: .94; letter-spacing: -.075em; max-width: 900px; }
+    .gradient-text { background: linear-gradient(90deg, #9e325e, var(--pink), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { margin-top: 22px; color: var(--muted); font-size: clamp(1rem, 2vw, 1.22rem); line-height: 1.75; max-width: 760px; }
+    .quote { margin-top: 22px; padding: 18px 20px; border-left: 4px solid var(--pink); background: rgba(255,255,255,.66); border-radius: 0 var(--radius-md) var(--radius-md) 0; color: #5a263d; max-width: 720px; }
+    .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .command-card {
+      position: relative; overflow: hidden; padding: 24px; border: 1px solid var(--border); border-radius: 34px;
+      background: linear-gradient(145deg, rgba(255,255,255,.84), rgba(255,235,245,.64));
+      box-shadow: var(--shadow); animation: float 6s ease-in-out infinite;
+    }
+    .command-card::before { content:""; position:absolute; width:280px; height:280px; border-radius:50%; right:-90px; top:-90px; background:radial-gradient(circle, rgba(255,119,173,.35), transparent 65%); }
+    .mini-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; position:relative; z-index:1; }
+    .traffic { display:flex; gap:7px; }
+    .dot { width:11px; height:11px; border-radius:50%; background:var(--danger); }
+    .dot:nth-child(2){ background:var(--yellow); } .dot:nth-child(3){ background:var(--green); }
+    .status-pill { padding:7px 10px; border-radius:999px; color:#167653; background:rgba(57,197,143,.12); border:1px solid rgba(57,197,143,.22); font-size:.78rem; }
+    .dashboard-stack { display:grid; gap:14px; position:relative; z-index:1; }
+    .dash-item { padding:16px; border-radius:var(--radius-lg); border:1px solid rgba(213,85,135,.13); background:rgba(255,255,255,.7); }
+    .dash-item strong { display:block; font-size:1.7rem; margin-bottom:4px; letter-spacing:-.04em; }
+    .dash-item span { color: var(--muted); font-size:.9rem; }
+
+    .section { padding: 72px 0; }
+    .section-header { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:26px; }
+    .section-kicker { color:#c7467b; font-weight:800; text-transform:uppercase; letter-spacing:.16em; font-size:.78rem; margin-bottom:9px; }
+    .section h2 { font-size:clamp(2rem, 4vw, 3.2rem); letter-spacing:-.06em; line-height:1; }
+    .section-desc { color: var(--muted); max-width:600px; line-height:1.7; }
+
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+    .card { border:1px solid var(--border); border-radius:var(--radius-xl); background:var(--card); backdrop-filter:blur(18px); box-shadow:0 16px 45px rgba(198,71,123,.13); padding:22px; transition:.24s ease; position:relative; overflow:hidden; }
+    .card::after { content:""; position:absolute; inset:auto -30% -50% auto; width:220px; height:220px; background:radial-gradient(circle, rgba(255,119,173,.14), transparent 70%); pointer-events:none; }
+    .card:hover { transform:translateY(-4px); background:var(--card-strong); }
+    .card-icon { width:44px; height:44px; display:grid; place-items:center; border-radius:15px; background:linear-gradient(135deg, rgba(255,119,173,.18), rgba(169,120,255,.18)); border:1px solid rgba(213,85,135,.14); margin-bottom:16px; font-size:1.25rem; }
+    .card h3 { font-size:1.16rem; margin-bottom:9px; letter-spacing:-.03em; }
+    .card p, .card li { color:var(--muted); line-height:1.6; font-size:.95rem; }
+    .card ul { padding-left:18px; margin-top:10px; }
+
+    .date-pill { display:inline-flex; align-items:center; gap:8px; margin-top:14px; padding:9px 12px; border-radius:999px; color:var(--muted); background:rgba(255,255,255,.62); border:1px solid var(--border); font-size:.88rem; }
+    .progress-wrap { margin:18px 0; }
+    .progress-label { display:flex; justify-content:space-between; gap:10px; color:var(--muted); margin-bottom:8px; font-size:.9rem; }
+    .progress-bg { width:100%; height:12px; border-radius:999px; background:rgba(213,85,135,.12); overflow:hidden; border:1px solid rgba(213,85,135,.09); }
+    .progress-fill { width:0%; height:100%; border-radius:inherit; background:linear-gradient(90deg, var(--pink), var(--purple), var(--peach)); transition:width .35s ease; }
+
+    .checklist { display:grid; gap:12px; }
+    .task { display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:var(--radius-md); background:rgba(255,255,255,.62); border:1px solid rgba(213,85,135,.12); cursor:pointer; transition:.22s ease; }
+    .task:hover { background:rgba(255,255,255,.88); }
+    .task input { width:19px; height:19px; accent-color:var(--pink); }
+    .task span { color:var(--muted); }
+    .task.done span { color:var(--text); text-decoration:line-through; text-decoration-color:var(--pink); }
+    .action-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+
+    .chart-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:18px 0; }
+    .mini-metric { padding:13px; border-radius:var(--radius-md); background:rgba(255,255,255,.62); border:1px solid rgba(213,85,135,.12); }
+    .mini-metric span { display:block; color:var(--muted); font-size:.78rem; margin-bottom:6px; }
+    .mini-metric strong { font-size:1.25rem; letter-spacing:-.04em; }
+    .cartoon-chart-card { background: radial-gradient(circle at 12% 18%, rgba(255,209,102,.28), transparent 18%), radial-gradient(circle at 88% 12%, rgba(255,119,173,.22), transparent 18%), rgba(255,255,255,.72); }
+    .month-chart { height:260px; display:flex; align-items:end; gap:7px; padding:18px 12px 12px; border-radius:34px; background:radial-gradient(circle, rgba(255,119,173,.14) 2px, transparent 2px), rgba(255,255,255,.45); background-size:24px 24px; border:2px dashed rgba(213,85,135,.22); overflow-x:auto; }
+    .chart-bar-wrap { min-width:24px; flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:end; gap:7px; }
+    .chart-bar { width:100%; min-height:4px; border-radius:18px 18px 8px 8px; background:linear-gradient(180deg, var(--pink), var(--purple), var(--peach)); border:2px solid rgba(255,255,255,.45); box-shadow:0 0 16px rgba(255,119,173,.22); opacity:.95; transition:.24s ease; position:relative; }
+    .chart-bar.empty { background:rgba(213,85,135,.12); box-shadow:none; opacity:.55; }
+    .chart-bar.today { outline:2px solid rgba(147,73,214,.45); outline-offset:3px; }
+    .chart-day { color:var(--muted-2); font-size:.68rem; }
+    .chart-note { color:var(--muted); font-size:.88rem; line-height:1.6; margin-top:14px; }
+
+    .timeline { position:relative; display:grid; gap:16px; }
+    .timeline::before { content:""; position:absolute; left:23px; top:118px; bottom:10px; width:2px; background:linear-gradient(var(--pink), var(--purple), var(--peach)); opacity:.45; }
+    .roadmap-total { margin-left:64px; margin-bottom:18px; padding:18px; border-radius:var(--radius-xl); background:rgba(255,255,255,.64); border:1px solid var(--border); }
+    .level { display:grid; grid-template-columns:48px 1fr; gap:16px; align-items:start; position:relative; }
+    .level-number { width:46px; height:46px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,var(--pink),var(--purple)); color:white; font-weight:900; position:relative; z-index:1; box-shadow:0 0 24px rgba(255,119,173,.34); }
+    .topic-grid { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .topic-btn { border:1px solid rgba(213,85,135,.14); border-radius:999px; padding:8px 11px; background:rgba(255,255,255,.62); color:var(--muted); cursor:pointer; transition:.2s ease; }
+    .topic-btn.done { color:white; background:linear-gradient(135deg, var(--pink), var(--purple)); font-weight:800; }
+    .level-complete-btn { margin-top:10px; }
+
+    .input-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .field { display:grid; gap:7px; }
+    label { color:var(--muted); font-size:.88rem; }
+    input, textarea { width:100%; color:var(--text); background:rgba(255,255,255,.72); border:1px solid rgba(213,85,135,.15); outline:none; border-radius:var(--radius-md); padding:13px 14px; transition:.2s ease; }
+    input:focus, textarea:focus { border-color:rgba(255,119,173,.55); box-shadow:0 0 0 4px rgba(255,119,173,.12); }
+    textarea { min-height:105px; resize:vertical; }
+
+    .modal-backdrop { position:fixed; inset:0; display:none; place-items:center; padding:18px; background:rgba(83,24,53,.34); backdrop-filter:blur(14px); z-index:999; }
+    .modal-backdrop.show { display:grid; }
+    .modal-card { width:min(620px,100%); border:1px solid var(--border); border-radius:var(--radius-xl); background:linear-gradient(145deg, rgba(255,255,255,.96), rgba(255,234,245,.96)); box-shadow:var(--shadow); padding:24px; }
+    .modal-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:10px; }
+    .icon-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--border); background:rgba(255,255,255,.78); color:var(--text); cursor:pointer; font-size:1.4rem; }
+    .current-user-box { margin:14px 0; padding:14px; border-radius:var(--radius-md); background:rgba(255,119,173,.1); border:1px solid rgba(255,119,173,.18); color:var(--muted); }
+    .user-list, .task-manager-list { display:grid; gap:10px; margin-top:12px; }
+    .user-chip, .task-editor-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; padding:10px; border-radius:var(--radius-md); background:rgba(255,255,255,.64); border:1px solid rgba(213,85,135,.12); }
+
+    .review-accordion { display:grid; gap:12px; }
+    .review-item { padding:0; overflow:hidden; }
+    .review-question-btn { width:100%; border:0; cursor:pointer; color:var(--text); background:transparent; text-align:left; padding:18px; display:flex; justify-content:space-between; gap:12px; align-items:center; font-weight:850; letter-spacing:-.02em; }
+    .review-question-btn span:last-child { color:var(--pink); font-size:1.2rem; }
+    .review-answer-panel { display:none; padding:0 18px 18px; }
+    .review-item.open .review-answer-panel { display:block; }
+    .review-bottom-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; margin-top:18px; }
+    .review-history { margin-top:26px; }
+    .review-history-list { display:grid; gap:10px; margin-top:14px; }
+    .week-row { border-radius:var(--radius-lg); border:1px solid var(--border); background:rgba(255,255,255,.62); overflow:hidden; }
+    .week-toggle { width:100%; border:0; cursor:pointer; color:var(--text); background:transparent; padding:15px 16px; display:flex; justify-content:space-between; align-items:center; text-align:left; font-weight:850; }
+    .week-details { display:none; padding:0 16px 16px; color:var(--muted); line-height:1.6; }
+    .week-row.open .week-details { display:block; }
+    .week-answer { padding:12px; border-radius:var(--radius-md); background:rgba(255,255,255,.65); border:1px solid rgba(213,85,135,.1); margin-top:10px; }
+    .week-answer strong { display:block; color:var(--text); margin-bottom:5px; }
+
+    .month-plan { display:grid; grid-template-columns:repeat(6,minmax(170px,1fr)); gap:12px; overflow-x:auto; padding-bottom:8px; }
+    .toast { position:fixed; right:18px; bottom:18px; z-index:1000; opacity:0; pointer-events:none; transform:translateY(12px); padding:12px 16px; border-radius:999px; background:rgba(57,197,143,.14); border:1px solid rgba(57,197,143,.24); color:#116d4d; transition:.25s ease; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    footer { padding:42px 0 54px; text-align:center; color:var(--muted); }
+    footer strong { display:block; color:var(--text); font-size:clamp(1.7rem,4vw,3rem); letter-spacing:-.06em; margin-bottom:10px; }
+    @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid, .grid-2, .input-grid { grid-template-columns:1fr 1fr; }
+      .nav { align-items:flex-start; border-radius:24px; flex-direction:column; }
+      .nav-links { justify-content:flex-start; }
+    }
+    @media (max-width: 680px) {
+      .container { width:min(100% - 22px, 1180px); }
+      .hero { min-height:auto; padding-top:48px; }
+      .hero-grid, .grid, .grid-2, .input-grid, .chart-summary { grid-template-columns:1fr; }
+      .section-header { align-items:flex-start; flex-direction:column; }
+      .hero h1 { font-size:3.05rem; }
+      .roadmap-total { margin-left:0; }
+      .timeline::before { display:none; }
+      .level { grid-template-columns:1fr; }
+      .level-number { margin-bottom:-4px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="#hero"><span class="brand-icon">✚</span><span>MNS Nursing OS</span></a>
+    <div class="nav-links">
+      <a href="#today">Today</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#study">Study</a>
+      <a href="#review">Review</a>
+      <a href="#plan">Plan</a>
+    </div>
+    <button class="btn" id="userLoginBtn">👤 Login / User</button>
+  </nav>
+
+  <div class="modal-backdrop" id="userModal">
+    <div class="modal-card">
+      <div class="modal-head"><div><div class="section-kicker">User System</div><h2>Select or create user</h2></div><button class="icon-btn" id="closeUserModal">×</button></div>
+      <p class="section-desc">Simple local user selector. Later this can be connected to Supabase for phone + laptop sync.</p>
+      <div class="current-user-box">Current User: <strong id="currentUserName">No user selected</strong></div>
+      <div class="user-list" id="userList"></div>
+      <div class="input-grid" style="margin-top:14px;"><div class="field"><label>New user name</label><input id="newUserName" placeholder="Example: Anu"></div><button class="btn btn-primary" id="createUserBtn" style="align-self:end;">Create User</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal-card">
+      <div class="modal-head"><div><div class="section-kicker">Daily Tasks</div><h2>Add, edit, or remove tasks</h2></div><button class="icon-btn" id="closeTaskModal">×</button></div>
+      <p class="section-desc">Edit task names one by one. Add new tasks without deleting your existing checklist.</p>
+      <div class="task-manager-list" id="taskManagerList"></div>
+      <div class="action-row"><button class="btn" id="addTaskRowBtn">+ Add Task</button><button class="btn btn-primary" id="saveTasksBtn">Save Tasks</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <header class="hero" id="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">🌸 Nursing + Discipline + MNS Dream System</div>
+        <h1>BSc Nursing / GNM to <span class="gradient-text">Military Nursing Service</span></h1>
+        <p>A soft but powerful daily command center for a girl who wants to become a strong, disciplined nurse and prepare step by step for MNS.</p>
+        <div class="quote">“Small daily care, strong mind, steady study, and brave service.”</div>
+        <div class="hero-actions"><a class="btn btn-primary" href="#today">Start Today</a><a class="btn" href="#roadmap">View MNS Roadmap</a><a class="btn" href="#review">Weekly Review</a></div>
+      </div>
+      <aside class="command-card">
+        <div class="mini-top"><div class="traffic"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="status-pill">Dream Active</div></div>
+        <div class="dashboard-stack">
+          <div class="dash-item"><strong id="heroProgress">0%</strong><span>Daily execution score</span></div>
+          <div class="dash-item"><strong>Nursing</strong><span>BSc Nursing / GNM foundation</span></div>
+          <div class="dash-item"><strong>MNS</strong><span>Study + fitness + confidence + service mindset</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="profile">
+      <div class="container">
+        <div class="section-header"><div><div class="section-kicker">Current Goal</div><h2>A calm system for a serious nursing dream.</h2></div><p class="section-desc">This page is made for an aspirant who is currently aiming for BSc Nursing or GNM and wants to move towards Military Nursing Service with discipline.</p></div>
+        <div class="grid">
+          <div class="card"><div class="card-icon">🩺</div><h3>Nursing Foundation</h3><p>Build strong basics in anatomy, physiology, nursing foundations, first aid, and patient care.</p></div>
+          <div class="card"><div class="card-icon">🇮🇳</div><h3>MNS Direction</h3><p>Prepare with service mindset, confidence, English communication, awareness, and fitness.</p></div>
+          <div class="card"><div class="card-icon">💪</div><h3>Daily Discipline</h3><p>Small daily wins: study, revise, walk, hydrate, read, and review.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="today">
+      <div class="container grid-2">
+        <div class="card" id="tracker">
+          <div class="section-kicker">Daily Minimum System</div>
+          <h2>Win today softly, but seriously.</h2>
+          <p class="section-desc">Complete at least 3 tasks. Perfect routine is not needed; consistency is needed.</p>
+          <div class="date-pill">📅 <span id="todayDate">Today</span></div>
+          <div class="progress-wrap"><div class="progress-label"><span>Daily Progress</span><strong id="progressText">0%</strong></div><div class="progress-bg"><div class="progress-fill" id="progressFill"></div></div></div>
+          <div class="checklist" id="dailyChecklist"></div>
+          <div class="action-row"><button class="btn btn-primary" id="saveTodayBtn">Save Today’s Checklist</button><button class="btn" id="editTasksBtn">Add / Edit Task</button><button class="btn" id="resetToday">Reset Today</button></div>
+        </div>
+        <div class="card cartoon-chart-card">
+          <div class="section-kicker">Monthly Progress Graph</div><h2>This month’s discipline garden.</h2><p class="section-desc">Each day you complete tasks, your pink progress garden grows.</p>
+          <div class="chart-summary"><div class="mini-metric"><span>Today</span><strong id="chartToday">0%</strong></div><div class="mini-metric"><span>Best Day</span><strong id="chartBest">0%</strong></div><div class="mini-metric"><span>Average</span><strong id="chartAverage">0%</strong></div></div>
+          <div class="month-chart" id="monthChart"></div><p class="chart-note">Tip: Open this page daily and tick the tasks. This graph becomes a proof of discipline.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="roadmap">
+      <div class="container">
+        <div class="section-header"><div><div class="section-kicker">MNS Roadmap</div><h2>From nursing basics to military nursing confidence.</h2></div><p class="section-desc">Move level by level. Verify official MNS notifications when applying, but use this as your daily preparation roadmap.</p></div>
+        <div class="timeline" id="roadmapList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="study">
+      <div class="container">
+        <div class="section-header"><div><div class="section-kicker">Study + Body Care</div><h2>Strong nurse = knowledge + health + kindness.</h2></div></div>
+        <div class="grid">
+          <div class="card"><div class="card-icon">📘</div><h3>Daily Study</h3><ul><li>Read one nursing topic</li><li>Make short notes</li><li>Revise diagrams</li><li>Practice previous questions</li></ul></div>
+          <div class="card"><div class="card-icon">🏃‍♀️</div><h3>Fitness</h3><ul><li>Walk or jog</li><li>Stretching</li><li>Basic strength</li><li>Sleep on time</li></ul></div>
+          <div class="card"><div class="card-icon">🗣️</div><h3>Communication</h3><ul><li>Read English aloud</li><li>Learn 5 medical words</li><li>Practice interview answers</li><li>Speak with confidence</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="english">
+      <div class="container grid-2">
+        <div class="card"><div class="section-kicker">English Practice</div><h2>Daily 15-minute speaking routine.</h2><ul><li>Read one nursing paragraph.</li><li>Summarize it in simple English.</li><li>Speak it aloud.</li><li>Record voice once a week.</li></ul></div>
+        <div class="card"><div class="field"><label>Today’s English / nursing reflection</label><textarea id="englishPractice" placeholder="Write a small paragraph here..."></textarea></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="review">
+      <div class="container">
+        <div class="section-header"><div><div class="section-kicker">Weekly Review</div><h2>Review the week, not your self-worth.</h2></div><p class="section-desc">Questions stay hidden until clicked. Save each week to build your progress history.</p></div>
+        <div class="review-accordion" id="reviewGrid"></div>
+        <div class="review-bottom-actions"><button class="btn" id="clearReview">Clear Current Review</button><button class="btn btn-primary" id="saveReviewBtn">Save Weekly Review</button></div>
+        <div class="card review-history"><div class="section-kicker">Past Weekly Reviews</div><h3>Saved weeks</h3><p class="section-desc">Click a week to view saved answers. Details stay hidden until opened.</p><div class="review-history-list" id="reviewHistoryList"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="container"><div class="section-header"><div><div class="section-kicker">6-Month Preparation Plan</div><h2>Six months of soft discipline.</h2></div></div><div class="month-plan" id="monthPlan"></div></div>
+    </section>
+  </main>
+
+  <footer><div class="container"><strong>Care, courage, consistency.</strong><p>Built as a pink command center for BSc Nursing / GNM and MNS preparation.</p></div></footer>
+
+  <script>
+    let dailyTasks = [
+      "Study nursing subject for 45 minutes",
+      "Revise one anatomy/physiology diagram",
+      "Practice English speaking for 15 minutes",
+      "Walk / exercise for 20 minutes",
+      "Drink enough water and eat properly",
+      "Review today before sleeping"
+    ];
+
+    const roadmap = [
+      { title: "Nursing Admission Foundation", topics: ["BSc/GNM clarity", "Biology revision", "Basic chemistry", "Study timetable", "Document checklist"], goal: "Get clear about nursing path and build study rhythm.", project: "Make a one-page admission and study checklist." },
+      { title: "Nursing Core Basics", topics: ["Anatomy", "Physiology", "Microbiology", "First aid", "Nursing foundations"], goal: "Understand the human body and basic care principles.", project: "Create short notes for 20 important nursing topics." },
+      { title: "MNS Awareness", topics: ["Official notification tracking", "Military nursing role", "Service mindset", "Current affairs", "General awareness"], goal: "Know what MNS needs and prepare without confusion.", project: "Maintain a weekly MNS awareness notebook." },
+      { title: "Fitness + Discipline", topics: ["Walking", "Stamina", "Posture", "Sleep routine", "Healthy food"], goal: "Become physically active, confident, and consistent.", project: "Track 30 days of walking and sleep." },
+      { title: "English + Interview Confidence", topics: ["Self introduction", "Medical vocabulary", "Speaking practice", "Personality", "Mock interview"], goal: "Speak clearly and confidently in simple English.", project: "Record 10 self-introduction practice videos." },
+      { title: "Final MNS Preparation", topics: ["Revision", "Mock tests", "Previous questions", "Interview file", "Confidence routine"], goal: "Prepare seriously for application, exam, and interview stages.", project: "Build a complete MNS preparation folder." }
+    ];
+
+    const reviewQuestions = [
+      "What did I study this week?",
+      "Which nursing topic did I understand better?",
+      "What did I do for MNS preparation?",
+      "Did I exercise or improve health?",
+      "What distracted me this week?",
+      "What should I fix next week?",
+      "What made me proud this week?",
+      "What is next week’s top priority?"
+    ];
+
+    const months = [
+      ["Month 1", "Build routine, revise biology basics, start nursing notes, walk daily."],
+      ["Month 2", "Study anatomy and physiology basics, improve English speaking."],
+      ["Month 3", "Start MNS awareness, current affairs, and basic fitness tracking."],
+      ["Month 4", "Practice nursing questions, diagrams, and weekly mock reviews."],
+      ["Month 5", "Prepare interview answers, confidence speaking, and document folder."],
+      ["Month 6", "Revision, mock tests, fitness consistency, and final preparation." ]
+    ];
+
+    function save(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+    function load(key, fallback) { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; } catch { return fallback; } }
+    function showToast(message = "Saved") { const toast = document.getElementById("toast"); toast.textContent = message; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 1400); }
+    function escapeHtml(value) { return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+    dailyTasks = load("mnsCustomDailyTasks", dailyTasks);
+
+    const checklistEl = document.getElementById("dailyChecklist");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const heroProgress = document.getElementById("heroProgress");
+    const todayDate = document.getElementById("todayDate");
+    const monthChart = document.getElementById("monthChart");
+    const chartToday = document.getElementById("chartToday");
+    const chartBest = document.getElementById("chartBest");
+    const chartAverage = document.getElementById("chartAverage");
+
+    const now = new Date();
+    const todayKey = getDateKey(now);
+    todayDate.textContent = now.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+    let allTaskStates = load("mnsDailyTaskStatesByDate", {});
+    let taskState = allTaskStates[todayKey] || Array(dailyTasks.length).fill(false);
+    taskState = dailyTasks.map((_, index) => Boolean(taskState[index]));
+
+    function getDateKey(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`; }
+
+    function renderChecklist() {
+      checklistEl.innerHTML = "";
+      dailyTasks.forEach((task, index) => {
+        const label = document.createElement("label");
+        label.className = "task" + (taskState[index] ? " done" : "");
+        label.innerHTML = `<input type="checkbox" ${taskState[index] ? "checked" : ""}><span>${escapeHtml(task)}</span>`;
+        const input = label.querySelector("input");
+        input.addEventListener("change", () => {
+          taskState[index] = input.checked;
+          allTaskStates[todayKey] = taskState;
+          save("mnsDailyTaskStatesByDate", allTaskStates);
+          updateProgress();
+          renderChecklist();
+        });
+        checklistEl.appendChild(label);
+      });
+      updateProgress();
+    }
+
+    function saveTodayProgress(percent) { const progressHistory = load("mnsDailyProgressHistory", {}); progressHistory[todayKey] = percent; save("mnsDailyProgressHistory", progressHistory); }
+    function updateProgress() { const completed = taskState.filter(Boolean).length; const percent = Math.round((completed / dailyTasks.length) * 100); progressFill.style.width = percent + "%"; progressText.textContent = `${percent}% • ${completed}/${dailyTasks.length}`; heroProgress.textContent = percent + "%"; saveTodayProgress(percent); renderMonthChart(); }
+
+    function renderMonthChart() {
+      const progressHistory = load("mnsDailyProgressHistory", {});
+      const year = now.getFullYear(); const month = now.getMonth(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const values = [];
+      monthChart.innerHTML = "";
+      for (let day = 1; day <= daysInMonth; day++) {
+        const key = getDateKey(new Date(year, month, day)); const value = progressHistory[key] || 0; values.push(value);
+        const wrap = document.createElement("div"); wrap.className = "chart-bar-wrap"; wrap.title = `${key}: ${value}%`;
+        const bar = document.createElement("div"); bar.className = "chart-bar" + (value === 0 ? " empty" : "") + (key === todayKey ? " today" : ""); bar.style.height = Math.max(value, 3) + "%";
+        const label = document.createElement("div"); label.className = "chart-day"; label.textContent = day;
+        wrap.appendChild(bar); wrap.appendChild(label); monthChart.appendChild(wrap);
+      }
+      const saved = values.filter(v => v > 0); const todayPercent = progressHistory[todayKey] || 0; const best = saved.length ? Math.max(...saved) : 0; const avg = saved.length ? Math.round(saved.reduce((a,b)=>a+b,0)/saved.length) : 0;
+      chartToday.textContent = todayPercent + "%"; chartBest.textContent = best + "%"; chartAverage.textContent = avg + "%";
+    }
+
+    document.getElementById("saveTodayBtn").addEventListener("click", () => { allTaskStates[todayKey] = taskState; save("mnsDailyTaskStatesByDate", allTaskStates); updateProgress(); showToast("Today’s checklist saved"); });
+    document.getElementById("resetToday").addEventListener("click", () => { taskState = Array(dailyTasks.length).fill(false); allTaskStates[todayKey] = taskState; save("mnsDailyTaskStatesByDate", allTaskStates); saveTodayProgress(0); renderChecklist(); showToast("Today reset"); });
+
+    let taskDrafts = [];
+    function openTaskManager() { taskDrafts = dailyTasks.map(task => task); renderTaskManager(); document.getElementById("taskModal").classList.add("show"); }
+    function closeTaskManager() { taskDrafts = []; document.getElementById("taskModal").classList.remove("show"); }
+    function renderTaskManager() {
+      const list = document.getElementById("taskManagerList"); list.innerHTML = "";
+      taskDrafts.forEach((task, index) => {
+        const row = document.createElement("div"); row.className = "task-editor-row";
+        row.innerHTML = `<input type="text" value="${escapeHtml(task)}" data-task-input="${index}" placeholder="Task name"><button class="btn danger-btn" data-remove-task="${index}">Remove</button>`;
+        list.appendChild(row);
+      });
+      document.querySelectorAll("[data-task-input]").forEach(input => input.addEventListener("input", () => { taskDrafts[Number(input.dataset.taskInput)] = input.value; }));
+      document.querySelectorAll("[data-remove-task]").forEach(button => button.addEventListener("click", () => { const index = Number(button.dataset.removeTask); if (taskDrafts.length <= 1) { alert("Keep at least one task."); return; } taskDrafts.splice(index, 1); renderTaskManager(); }));
+    }
+    document.getElementById("editTasksBtn").addEventListener("click", openTaskManager);
+    document.getElementById("closeTaskModal").addEventListener("click", closeTaskManager);
+    document.getElementById("taskModal").addEventListener("click", event => { if (event.target.id === "taskModal") closeTaskManager(); });
+    document.getElementById("addTaskRowBtn").addEventListener("click", () => { taskDrafts.push("New task"); renderTaskManager(); const inputs = document.querySelectorAll("[data-task-input]"); const last = inputs[inputs.length-1]; if (last) { last.focus(); last.select(); } });
+    document.getElementById("saveTasksBtn").addEventListener("click", () => {
+      const oldTasks = [...dailyTasks]; const oldStateByTask = {}; oldTasks.forEach((task, index) => { if (!(task in oldStateByTask)) oldStateByTask[task] = Boolean(taskState[index]); });
+      const updatedTasks = taskDrafts.map(task => String(task).trim()).filter(Boolean); if (!updatedTasks.length) { alert("Keep at least one task."); return; }
+      const nextState = updatedTasks.map((task, index) => oldTasks[index] === task ? Boolean(taskState[index]) : (task in oldStateByTask ? Boolean(oldStateByTask[task]) : false));
+      dailyTasks = updatedTasks; taskState = nextState; save("mnsCustomDailyTasks", dailyTasks); allTaskStates[todayKey] = taskState; save("mnsDailyTaskStatesByDate", allTaskStates); renderChecklist(); closeTaskManager(); showToast("Tasks updated");
+    });
+
+    function getRoadmapProgress() { return load("mnsRoadmapProgress", {}); }
+    function saveRoadmapProgress(progress) { save("mnsRoadmapProgress", progress); }
+    function calculateRoadmapStats() { const progress = getRoadmapProgress(); let done = 0, total = 0; roadmap.forEach((level, li) => level.topics.forEach((_, ti) => { total++; if (progress[`${li}-${ti}`]) done++; })); return { done, total, percent: total ? Math.round((done / total) * 100) : 0 }; }
+    function renderRoadmap() {
+      const list = document.getElementById("roadmapList"); const progress = getRoadmapProgress(); const stats = calculateRoadmapStats();
+      list.innerHTML = `<div class="roadmap-total"><div class="progress-label"><span>Whole MNS Roadmap Progress</span><strong>${stats.percent}% • ${stats.done}/${stats.total}</strong></div><div class="progress-bg"><div class="progress-fill" style="width:${stats.percent}%"></div></div></div>`;
+      list.innerHTML += roadmap.map((level, li) => { const complete = level.topics.filter((_, ti) => progress[`${li}-${ti}`]).length; const pct = Math.round((complete / level.topics.length) * 100); return `<div class="level"><div class="level-number">${li+1}</div><div class="card"><h3>Level ${li+1}: ${level.title}</h3><div class="progress-wrap"><div class="progress-label"><span>Level Progress</span><strong>${pct}% • ${complete}/${level.topics.length}</strong></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div></div><div class="topic-grid">${level.topics.map((topic, ti) => { const key = `${li}-${ti}`; return `<button class="topic-btn ${progress[key] ? "done" : ""}" data-level="${li}" data-topic="${ti}">${progress[key] ? "✓" : "+"} ${topic}</button>`; }).join("")}</div><p><strong>Skill goal:</strong> ${level.goal}</p><p><strong>Mini project:</strong> ${level.project}</p><button class="btn level-complete-btn" data-complete-level="${li}">Mark Level ${li+1} Complete</button></div></div>`; }).join("");
+      document.querySelectorAll(".topic-btn").forEach(button => button.addEventListener("click", () => { const progress = getRoadmapProgress(); const key = `${button.dataset.level}-${button.dataset.topic}`; progress[key] = !progress[key]; saveRoadmapProgress(progress); renderRoadmap(); }));
+      document.querySelectorAll("[data-complete-level]").forEach(button => button.addEventListener("click", () => { const li = Number(button.dataset.completeLevel); const progress = getRoadmapProgress(); roadmap[li].topics.forEach((_, ti) => progress[`${li}-${ti}`] = true); saveRoadmapProgress(progress); renderRoadmap(); showToast(`Level ${li+1} completed`); }));
+    }
+
+    function setupEnglishPractice() { const box = document.getElementById("englishPractice"); box.value = load("mnsEnglishPractice", ""); box.addEventListener("input", () => save("mnsEnglishPractice", box.value)); }
+
+    function getCurrentWeekLabel() { const start = new Date(now.getFullYear(), 0, 1); const days = Math.floor((now - start) / 86400000); const weekNumber = Math.ceil((days + start.getDay() + 1) / 7); return `Week ${weekNumber}`; }
+    function renderReview() {
+      const grid = document.getElementById("reviewGrid"); const data = load("mnsWeeklyReview", {}); grid.innerHTML = "";
+      reviewQuestions.forEach((question, index) => {
+        const wrap = document.createElement("div"); wrap.className = "card review-item"; wrap.innerHTML = `<button class="review-question-btn" data-review-toggle="${index}"><span>${question}</span><span>+</span></button><div class="review-answer-panel"><textarea id="review-${index}" placeholder="Write here..."></textarea></div>`;
+        const textarea = wrap.querySelector("textarea"); textarea.value = data[index] || ""; textarea.addEventListener("input", () => { const current = load("mnsWeeklyReview", {}); current[index] = textarea.value; save("mnsWeeklyReview", current); }); grid.appendChild(wrap);
+      });
+      document.querySelectorAll("[data-review-toggle]").forEach(button => button.addEventListener("click", () => { const item = button.closest(".review-item"); item.classList.toggle("open"); button.querySelector("span:last-child").textContent = item.classList.contains("open") ? "−" : "+"; }));
+      renderReviewHistory();
+    }
+    function collectReviewAnswers() { const answers = {}; reviewQuestions.forEach((_, index) => { const textarea = document.getElementById(`review-${index}`); answers[index] = textarea ? textarea.value.trim() : ""; }); return answers; }
+    function renderReviewHistory() {
+      const list = document.getElementById("reviewHistoryList"); const history = load("mnsWeeklyReviewHistory", []);
+      if (!history.length) { list.innerHTML = `<div class="week-row"><button class="week-toggle" type="button"><span>No saved weekly reviews yet</span><span>—</span></button></div>`; return; }
+      list.innerHTML = history.map((entry, index) => `<div class="week-row"><button class="week-toggle" type="button" data-week-toggle="${index}"><span>${entry.label || `Week ${index+1}`} • ${entry.date || "Saved"}</span><span>View</span></button><div class="week-details">${reviewQuestions.map((q, qi) => `<div class="week-answer"><strong>${q}</strong><p>${escapeHtml(entry.answers?.[qi] || "Not written").replaceAll("\n", "<br>")}</p></div>`).join("")}</div></div>`).join("");
+      document.querySelectorAll("[data-week-toggle]").forEach(button => button.addEventListener("click", () => { const row = button.closest(".week-row"); row.classList.toggle("open"); button.querySelector("span:last-child").textContent = row.classList.contains("open") ? "Hide" : "View"; }));
+    }
+    document.getElementById("saveReviewBtn").addEventListener("click", () => { const answers = collectReviewAnswers(); if (!Object.values(answers).some(v => v.trim())) { alert("Write at least one answer before saving."); return; } const history = load("mnsWeeklyReviewHistory", []); history.push({ label: `Week ${history.length + 1}`, calendarWeek: getCurrentWeekLabel(), date: new Date().toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }), answers }); save("mnsWeeklyReviewHistory", history); save("mnsWeeklyReview", answers); renderReviewHistory(); showToast("Weekly review saved"); });
+    document.getElementById("clearReview").addEventListener("click", () => { localStorage.removeItem("mnsWeeklyReview"); renderReview(); showToast("Current review cleared"); });
+
+    function getUsers() { return load("mnsUsers", []); }
+    function getCurrentUser() { return load("mnsCurrentUser", null); }
+    function setCurrentUser(user) { save("mnsCurrentUser", user); updateCurrentUserUI(); }
+    function updateCurrentUserUI() { const user = getCurrentUser(); const name = user ? user.name : "No user selected"; document.getElementById("currentUserName").textContent = name; document.getElementById("userLoginBtn").textContent = user ? `👤 ${user.name}` : "👤 Login / User"; }
+    function renderUserList() { const list = document.getElementById("userList"); const users = getUsers(); if (!users.length) { list.innerHTML = `<div class="user-chip"><span>No users yet. Create one below.</span></div>`; return; } list.innerHTML = users.map(user => `<div class="user-chip"><span>👤 ${escapeHtml(user.name)}</span><button class="btn" data-select-user="${user.id}">Select</button></div>`).join(""); document.querySelectorAll("[data-select-user]").forEach(button => button.addEventListener("click", () => { const user = getUsers().find(u => u.id === button.dataset.selectUser); if (user) { setCurrentUser(user); document.getElementById("userModal").classList.remove("show"); showToast(`Switched to ${user.name}`); } })); }
+    function setupUserSystem() { const modal = document.getElementById("userModal"); document.getElementById("userLoginBtn").addEventListener("click", () => { renderUserList(); modal.classList.add("show"); }); document.getElementById("closeUserModal").addEventListener("click", () => modal.classList.remove("show")); modal.addEventListener("click", event => { if (event.target === modal) modal.classList.remove("show"); }); document.getElementById("createUserBtn").addEventListener("click", () => { const input = document.getElementById("newUserName"); const name = input.value.trim(); if (!name) { alert("Enter a user name first."); return; } const users = getUsers(); if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) { alert("This user already exists."); return; } const user = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), name }; users.push(user); save("mnsUsers", users); setCurrentUser(user); input.value = ""; renderUserList(); modal.classList.remove("show"); showToast(`Created ${name}`); }); updateCurrentUserUI(); }
+
+    function renderMonthPlan() { const wrap = document.getElementById("monthPlan"); wrap.innerHTML = months.map(([title, body]) => `<div class="card"><div class="card-icon">🌸</div><h3>${title}</h3><p>${body}</p></div>`).join(""); }
+
+    setupUserSystem(); renderChecklist(); renderMonthChart(); renderRoadmap(); setupEnglishPractice(); renderReview(); renderMonthPlan();
+  </script>
+</body>
+</html>

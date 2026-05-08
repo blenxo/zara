@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nursing Dream Companion Dashboard</title>
+  <style>
+    :root {
+      --bg: #fff4f8;
+      --bg-2: #ffe8f1;
+      --card: rgba(255, 255, 255, 0.72);
+      --card-strong: rgba(255, 255, 255, 0.92);
+      --text: #3d2632;
+      --muted: #866372;
+      --muted-2: #aa8292;
+      --line: rgba(172, 89, 123, 0.18);
+      --pink: #f072a8;
+      --rose: #ff9bbb;
+      --peach: #ffc8af;
+      --lavender: #b99cff;
+      --mint: #8ee6c6;
+      --cream: #fff9fb;
+      --danger: #d94e75;
+      --shadow: 0 24px 70px rgba(143, 66, 98, 0.18);
+      --soft-shadow: 0 14px 34px rgba(143, 66, 98, 0.12);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 6% 8%, rgba(255, 155, 187, 0.42), transparent 32%),
+        radial-gradient(circle at 88% 4%, rgba(185, 156, 255, 0.22), transparent 30%),
+        radial-gradient(circle at 60% 92%, rgba(255, 200, 175, 0.36), transparent 32%),
+        linear-gradient(135deg, #fff7fa 0%, #ffe9f1 52%, #fff6f8 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(172, 89, 123, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(172, 89, 123, 0.055) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 85%);
+      z-index: -2;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .container { width: min(1180px, calc(100% - 28px)); margin: 0 auto; }
+
+    .nav {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      margin: 12px auto 0;
+      width: min(1180px, calc(100% - 22px));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(22px);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--rose), var(--peach));
+      color: white;
+      box-shadow: 0 12px 28px rgba(240, 114, 168, 0.32);
+    }
+
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+    .nav-links a {
+      padding: 9px 11px;
+      color: var(--muted);
+      border-radius: 999px;
+      font-size: .84rem;
+      transition: .2s ease;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(240, 114, 168, 0.12); }
+
+    .hero { padding: 82px 0 34px; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 26px; align-items: center; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 700;
+      font-size: .88rem;
+    }
+
+    .hero h1 { font-size: clamp(2.7rem, 7vw, 6.1rem); line-height: .94; letter-spacing: -0.08em; max-width: 900px; }
+    .gradient-text { background: linear-gradient(90deg, #7b2c4f, var(--pink), var(--lavender)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { margin-top: 20px; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); line-height: 1.75; max-width: 720px; }
+    .quote {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--pink);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      background: rgba(255,255,255,.62);
+      color: #744557;
+      max-width: 720px;
+      box-shadow: 0 10px 24px rgba(143, 66, 98, 0.08);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 999px;
+      transition: .22s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--soft-shadow); }
+    .btn-primary { border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--rose)); color: white; font-weight: 850; box-shadow: 0 14px 26px rgba(240, 114, 168, .24); }
+    .btn-soft { background: rgba(240, 114, 168, 0.1); color: #8f335a; }
+    .btn-danger { background: rgba(217, 78, 117, .10); color: var(--danger); }
+    .small-btn { min-height: 34px; padding: 7px 10px; font-size: .82rem; }
+
+    .hero-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,255,255,.44));
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      right: -90px;
+      top: -90px;
+      background: radial-gradient(circle, rgba(240, 114, 168, .28), transparent 65%);
+    }
+    .stack { display: grid; gap: 12px; position: relative; z-index: 1; }
+    .dash-item { padding: 16px; background: rgba(255,255,255,.64); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+    .dash-item strong { display: block; font-size: 1.65rem; letter-spacing: -0.05em; }
+    .dash-item span { color: var(--muted); font-size: .9rem; }
+
+    .section { padding: 44px 0; }
+    .section-header { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 20px; }
+    .section-kicker { color: var(--pink); text-transform: uppercase; letter-spacing: .15em; font-size: .75rem; font-weight: 850; margin-bottom: 8px; }
+    .section h2 { font-size: clamp(1.75rem, 4vw, 3rem); letter-spacing: -0.06em; line-height: 1; }
+    .section-desc { color: var(--muted); line-height: 1.7; max-width: 620px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--soft-shadow);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -80px;
+      bottom: -90px;
+      background: radial-gradient(circle, rgba(240, 114, 168, .12), transparent 70%);
+    }
+    .card h3 { font-size: 1.12rem; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .card p, .card li { color: var(--muted); line-height: 1.6; font-size: .94rem; }
+    .card ul { padding-left: 18px; margin-top: 9px; }
+    .mini-card { padding: 14px; border-radius: var(--radius-lg); background: rgba(255,255,255,.56); border: 1px solid var(--line); }
+
+    .collapse-card { padding: 0; }
+    .collapse-head {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+      padding: 20px;
+    }
+    .collapse-title strong { display: block; font-size: 1.1rem; letter-spacing: -0.03em; }
+    .collapse-title span { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+    .chev { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(240,114,168,.11); color: var(--pink); flex: 0 0 auto; }
+    .collapse-body { display: none; padding: 0 20px 20px; }
+    .collapse-card.open .collapse-body { display: block; }
+    .collapse-card.open .chev { transform: rotate(45deg); }
+
+    .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .field { display: grid; gap: 7px; }
+    label { color: var(--muted); font-size: .88rem; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      color: var(--text);
+      outline: none;
+      border-radius: var(--radius-md);
+      padding: 12px 13px;
+      transition: .2s ease;
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(240,114,168,.48); box-shadow: 0 0 0 4px rgba(240,114,168,.11); }
+
+    .checklist { display: grid; gap: 10px; }
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.58);
+      cursor: pointer;
+    }
+    .task input { width: 18px; height: 18px; accent-color: var(--pink); }
+    .task.done span { text-decoration: line-through; color: var(--muted-2); }
+
+    .action-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+    .progress-wrap { margin: 16px 0; }
+    .progress-label { display: flex; justify-content: space-between; color: var(--muted); font-size: .88rem; margin-bottom: 7px; gap: 12px; }
+    .progress-bg { height: 12px; border-radius: 999px; background: rgba(172,89,123,.13); overflow: hidden; border: 1px solid var(--line); }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--pink), var(--rose), var(--lavender)); border-radius: inherit; transition: .25s ease; }
+    .date-pill { display: inline-flex; margin-top: 12px; padding: 8px 11px; border-radius: 999px; background: rgba(255,255,255,.62); border: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
+
+    .chart-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+    .mini-metric { padding: 12px; border-radius: var(--radius-md); background: rgba(255,255,255,.58); border: 1px solid var(--line); }
+    .mini-metric span { display: block; color: var(--muted); font-size: .78rem; margin-bottom: 5px; }
+    .mini-metric strong { font-size: 1.15rem; }
+    .month-chart {
+      height: 248px;
+      display: flex;
+      align-items: end;
+      gap: 6px;
+      padding: 16px 10px 10px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle, rgba(240,114,168,.12) 2px, transparent 2px),
+        rgba(255,255,255,.48);
+      background-size: 22px 22px;
+      border: 2px dashed rgba(240,114,168,.22);
+      overflow-x: auto;
+    }
+    .bar-wrap { min-width: 24px; flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: end; gap: 7px; }
+    .bar { width: 100%; min-height: 4px; border-radius: 999px 999px 8px 8px; background: linear-gradient(180deg, var(--pink), var(--rose), var(--lavender)); border: 2px solid rgba(255,255,255,.72); }
+    .bar.empty { background: rgba(172,89,123,.14); border-color: transparent; }
+    .bar.today { outline: 2px solid rgba(240,114,168,.5); outline-offset: 2px; }
+    .bar-day { color: var(--muted-2); font-size: .68rem; }
+
+    .path-card { text-align: left; min-height: 152px; transition: .22s ease; }
+    .path-card.active { border-color: rgba(240,114,168,.55); background: rgba(255,255,255,.9); transform: translateY(-2px); }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .tag { padding: 7px 10px; border-radius: 999px; background: rgba(240,114,168,.1); color: #8d3459; border: 1px solid rgba(240,114,168,.14); font-size: .82rem; }
+
+    .timeline { position: relative; display: grid; gap: 14px; }
+    .timeline::before { content:""; position: absolute; left: 22px; top: 80px; bottom: 18px; width: 2px; background: linear-gradient(var(--pink), var(--rose), var(--lavender)); opacity: .38; }
+    .level { display: grid; grid-template-columns: 46px 1fr; gap: 14px; align-items: start; position: relative; }
+    .level-number { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--pink), var(--rose)); color: white; font-weight: 950; position: relative; z-index: 1; box-shadow: 0 10px 24px rgba(240,114,168,.22); }
+    .topic-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .topic-btn { border: 1px solid var(--line); border-radius: 999px; padding: 8px 10px; background: rgba(255,255,255,.62); color: var(--muted); }
+    .topic-btn.done { background: linear-gradient(135deg, var(--pink), var(--rose)); color: white; border-color: transparent; font-weight: 800; }
+
+    .stepper { display: flex; align-items: center; gap: 8px; }
+    .stepper strong { min-width: 48px; text-align: center; }
+    .progress-control { display: grid; gap: 12px; }
+    .progress-row { padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(255,255,255,.56); }
+    .subject-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 8px; }
+
+    .note-card .note-actions { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-top: 10px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.58); border: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
+    .pill.good { color: #197858; background: rgba(142,230,198,.2); }
+
+    .workout-day { margin-bottom: 12px; }
+    .workout-day h3 { margin-bottom: 10px; }
+
+    .segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+    .segmented button { border: 1px solid var(--line); border-radius: 999px; padding: 9px; background: rgba(255,255,255,.6); color: var(--muted); }
+    .segmented button.active { background: linear-gradient(135deg, var(--pink), var(--rose)); color: white; border-color: transparent; font-weight: 850; }
+
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--line); background: rgba(255,255,255,.56); }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--line); color: var(--muted); vertical-align: top; }
+    th { color: var(--text); background: rgba(240,114,168,.08); font-size: .86rem; }
+    td input, td select { padding: 10px; border-radius: 12px; }
+
+    .review-accordion { display: grid; gap: 12px; }
+    .review-item { padding: 0; }
+    .review-question-btn { width: 100%; border: 0; background: transparent; padding: 18px; color: var(--text); text-align: left; display: flex; justify-content: space-between; gap: 12px; font-weight: 850; }
+    .review-answer-panel { display: none; padding: 0 18px 18px; }
+    .review-item.open .review-answer-panel { display: block; }
+    .review-bottom { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+    .week-list { display: grid; gap: 10px; margin-top: 12px; }
+    .week-row { border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(255,255,255,.58); overflow: hidden; }
+    .week-toggle { width: 100%; border: 0; background: transparent; padding: 14px; display: flex; justify-content: space-between; gap: 12px; color: var(--text); font-weight: 850; }
+    .week-details { display: none; padding: 0 14px 14px; }
+    .week-row.open .week-details { display: block; }
+    .week-answer { padding: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.55); border-radius: var(--radius-md); margin-top: 9px; }
+    .week-answer strong { display: block; margin-bottom: 5px; color: var(--text); }
+
+    .task-editor-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; align-items: center; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--line); background: rgba(255,255,255,.56); }
+    .task-manager-list { display: grid; gap: 9px; margin-top: 13px; }
+    .modal-backdrop { position: fixed; inset: 0; display: none; place-items: center; z-index: 50; padding: 18px; background: rgba(83, 38, 58, .28); backdrop-filter: blur(16px); }
+    .modal-backdrop.show { display: grid; }
+    .modal-card { width: min(620px, 100%); max-height: min(86vh, 760px); overflow: auto; padding: 22px; border-radius: var(--radius-xl); background: rgba(255,255,255,.92); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .modal-head { display: flex; justify-content: space-between; gap: 14px; align-items: start; margin-bottom: 12px; }
+    .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: rgba(240,114,168,.08); color: var(--pink); font-size: 1.3rem; }
+    .toast { position: fixed; right: 18px; bottom: 18px; opacity: 0; transform: translateY(12px); pointer-events: none; z-index: 80; padding: 12px 16px; border-radius: 999px; background: rgba(255,255,255,.92); border: 1px solid var(--line); color: #8f335a; box-shadow: var(--soft-shadow); transition: .24s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    footer { padding: 42px 0 58px; text-align: center; color: var(--muted); }
+    footer strong { display: block; color: var(--text); font-size: clamp(1.65rem, 4vw, 2.8rem); letter-spacing: -0.06em; margin-bottom: 8px; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid, .grid-2, .grid-4, .input-grid { grid-template-columns: 1fr 1fr; }
+      .nav { align-items: flex-start; flex-direction: column; border-radius: 24px; }
+      .nav-links { justify-content: flex-start; }
+    }
+    @media (max-width: 680px) {
+      .container { width: min(100% - 20px, 1180px); }
+      .hero { padding-top: 46px; }
+      .hero-grid, .grid, .grid-2, .grid-4, .input-grid, .chart-summary, .segmented { grid-template-columns: 1fr; }
+      .section-header { align-items: flex-start; flex-direction: column; }
+      .hero h1 { font-size: 3rem; }
+      .timeline::before { left: 20px; }
+      .level { grid-template-columns: 42px 1fr; gap: 10px; }
+      .level-number { width: 40px; height: 40px; }
+      .collapse-head { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="#hero"><span class="brand-mark">N</span><span>Nursing Dream Companion</span></a>
+    <div class="nav-links">
+      <a href="#setup">Profile</a>
+      <a href="#today">Today</a>
+      <a href="#paths">Paths</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#care">Care</a>
+      <a href="#review">Review</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Soft daily system for MNS, BSc Nursing, and GNM dreams</div>
+        <h1>Nursing Dream <span class="gradient-text">Companion</span></h1>
+        <p>A calm one-page dashboard to track study, fitness, health, documents, interview practice, mistakes, and weekly growth.</p>
+        <div class="quote">Today I showed up. That is enough.</div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#today">Start Today</a>
+          <a class="btn" href="#setup">Set Goal</a>
+          <a class="btn" href="#review">Weekly Review</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="stack">
+          <div class="dash-item"><strong id="heroProgress">0%</strong><span>Daily execution score</span></div>
+          <div class="dash-item"><strong id="heroGoal">Dream Path</strong><span>Current selected goal</span></div>
+          <div class="dash-item"><strong id="heroFocus">Gentle Focus</strong><span>Main focus area</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="setup">
+      <div class="container">
+        <div class="section-header">
+          <div><div class="section-kicker">Profile / Goal Setup</div><h2>Set the dream clearly.</h2></div>
+          <p class="section-desc">Fill this once. It stays saved after refresh using localStorage.</p>
+        </div>
+        <div class="card">
+          <div class="input-grid">
+            <div class="field"><label>Name</label><input id="profileName" placeholder="Enter name"></div>
+            <div class="field"><label>Current goal</label><select id="profileGoal"><option>MNS</option><option>BSc Nursing</option><option>GNM</option></select></div>
+            <div class="field"><label>Target year</label><input id="profileYear" placeholder="Example: 2026"></div>
+            <div class="field"><label>Current status</label><input id="profileStatus" placeholder="Example: Plus Two completed / preparing"></div>
+            <div class="field"><label>Main focus area</label><input id="profileFocus" placeholder="Example: Biology + fitness"></div>
+            <div class="field"><label>Daily minimum goal</label><input id="profileMinimum" placeholder="Example: 2 hours study + 20 min walk"></div>
+          </div>
+          <div class="action-row"><button class="btn btn-primary" id="saveProfileBtn">Save Profile</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="today">
+      <div class="container grid-2">
+        <div class="card" id="tracker">
+          <div class="section-kicker">Daily Minimum System</div>
+          <h2>Win today gently.</h2>
+          <p class="section-desc">Tick the minimum tasks. Progress is saved by date.</p>
+          <div class="date-pill"><span id="todayDate">Today</span></div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Daily Progress</span><strong id="progressText">0%</strong></div>
+            <div class="progress-bg"><div class="progress-fill" id="progressFill"></div></div>
+          </div>
+          <div class="checklist" id="dailyChecklist"></div>
+          <div class="action-row">
+            <button class="btn btn-primary" id="saveTodayBtn">Save Today</button>
+            <button class="btn" id="editTasksBtn">Add / Edit Tasks</button>
+            <button class="btn btn-danger" id="resetToday">Reset Today</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-kicker">Monthly Progress Graph</div>
+          <h2>This month’s consistency.</h2>
+          <p class="section-desc">Soft visual history of daily effort.</p>
+          <div class="chart-summary">
+            <div class="mini-metric"><span>Today</span><strong id="chartToday">0%</strong></div>
+            <div class="mini-metric"><span>Best Day</span><strong id="chartBest">0%</strong></div>
+            <div class="mini-metric"><span>Average</span><strong id="chartAverage">0%</strong></div>
+          </div>
+          <div class="month-chart" id="monthChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="paths">
+      <div class="container">
+        <div class="section-header">
+          <div><div class="section-kicker">Path Selector</div><h2>Choose the path for this season.</h2></div>
+          <p class="section-desc">Click a path to show the focus list.</p>
+        </div>
+        <div class="grid" id="pathCards"></div>
+        <div class="card" style="margin-top:14px;"><h3 id="pathTitle">Select a path</h3><div class="tag-list" id="pathFocusList"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="roadmap">
+      <div class="container">
+        <div class="section-header">
+          <div><div class="section-kicker">Military Nursing Roadmap</div><h2>MNS-focused level roadmap.</h2></div>
+          <p class="section-desc">Track each step level by level. This is a planning guide, not official admission advice.</p>
+        </div>
+        <div class="timeline" id="roadmapList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="official">
+      <div class="container">
+        <div class="card collapse-card open">
+          <button class="collapse-head"><div class="collapse-title"><strong>Official Notification Tracker</strong><span>Use official notifications before applying.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body">
+            <div class="quote">Always verify official notifications before applying. Do not depend only on YouTube or random websites.</div>
+            <div class="checklist" id="officialChecklist" style="margin-top:14px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="study">
+      <div class="container">
+        <div class="card collapse-card open">
+          <button class="collapse-head"><div class="collapse-title"><strong>Subject Progress Tracker</strong><span>Increase or decrease progress manually.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body"><div class="progress-control" id="subjectProgress"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="notes">
+      <div class="container">
+        <div class="card collapse-card">
+          <button class="collapse-head"><div class="collapse-title"><strong>Nursing Notes</strong><span>Write short notes and mark revised.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body"><div class="grid-2" id="notesGrid"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="care">
+      <div class="container">
+        <div class="section-header">
+          <div><div class="section-kicker">Health, Food, Workout</div><h2>Care for the body that carries the dream.</h2></div>
+          <p class="section-desc">Rest is also progress.</p>
+        </div>
+
+        <div class="card collapse-card open">
+          <button class="collapse-head"><div class="collapse-title"><strong>Home Workout Tracker</strong><span>Weekly home workout plan with checkboxes.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body">
+            <div class="progress-wrap">
+              <div class="progress-label"><span>Workout Progress</span><strong id="workoutProgressText">0%</strong></div>
+              <div class="progress-bg"><div class="progress-fill" id="workoutProgressFill"></div></div>
+            </div>
+            <div class="grid-2" id="workoutGrid"></div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:14px;">
+          <div class="card collapse-card">
+            <button class="collapse-head"><div class="collapse-title"><strong>Health / Body Care Tracker</strong><span>Sleep, water, mood, pain, food, period notes.</span></div><span class="chev">+</span></button>
+            <div class="collapse-body">
+              <div class="quote">Rest is also progress.</div>
+              <div class="input-grid" id="healthGrid" style="margin-top:14px;"></div>
+            </div>
+          </div>
+          <div class="card collapse-card">
+            <button class="collapse-head"><div class="collapse-title"><strong>Food / Nutrition Tracker</strong><span>Daily food score.</span></div><span class="chev">+</span></button>
+            <div class="collapse-body">
+              <div class="progress-wrap">
+                <div class="progress-label"><span>Food Score</span><strong id="foodScoreText">0%</strong></div>
+                <div class="progress-bg"><div class="progress-fill" id="foodScoreFill"></div></div>
+              </div>
+              <div class="checklist" id="foodChecklist"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="prep">
+      <div class="container">
+        <div class="grid-2">
+          <div class="card collapse-card">
+            <button class="collapse-head"><div class="collapse-title"><strong>Interview Preparation</strong><span>Move each topic from not started to confident.</span></div><span class="chev">+</span></button>
+            <div class="collapse-body"><div class="grid" id="interviewGrid"></div></div>
+          </div>
+          <div class="card collapse-card">
+            <button class="collapse-head"><div class="collapse-title"><strong>Document Checklist</strong><span>Keep application documents ready.</span></div><span class="chev">+</span></button>
+            <div class="collapse-body"><div class="checklist" id="documentChecklist"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <div class="container">
+        <div class="card collapse-card">
+          <button class="collapse-head"><div class="collapse-title"><strong>Mock Test / Question Practice</strong><span>Track weekly question practice and revision.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body">
+            <div class="input-grid" id="mockGrid"></div>
+            <div class="mini-card" style="margin-top:12px;"><strong id="mockTotal">0 questions</strong><p>Total questions practiced this week</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mistakes">
+      <div class="container">
+        <div class="card collapse-card">
+          <button class="collapse-head"><div class="collapse-title"><strong>Mistake Notebook</strong><span>Add, edit, delete, and mark revised.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body">
+            <div class="input-grid">
+              <div class="field"><label>Mistake</label><input id="mistakeInput" placeholder="What mistake happened?"></div>
+              <div class="field"><label>Correct answer</label><input id="correctInput" placeholder="Correct answer / concept"></div>
+              <div class="field"><label>Topic</label><input id="topicInput" placeholder="Example: Biology"></div>
+              <div class="field"><label>Revised?</label><select id="revisedInput"><option>No</option><option>Yes</option></select></div>
+            </div>
+            <div class="action-row"><button class="btn btn-primary" id="addMistakeBtn">Add Mistake</button></div>
+            <div class="table-wrap" style="margin-top:14px;"><table><thead><tr><th>Mistake</th><th>Correct Answer</th><th>Topic</th><th>Revised</th><th>Action</th></tr></thead><tbody id="mistakeTable"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mood">
+      <div class="container">
+        <div class="card collapse-card">
+          <button class="collapse-head"><div class="collapse-title"><strong>Mood + Motivation Tracker</strong><span>Small emotional check-in.</span></div><span class="chev">+</span></button>
+          <div class="collapse-body">
+            <div class="quote">Today I showed up. That is enough.</div>
+            <div class="input-grid" id="moodGrid" style="margin-top:14px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="review">
+      <div class="container">
+        <div class="section-header">
+          <div><div class="section-kicker">Weekly Review</div><h2>Review the week softly.</h2></div>
+          <p class="section-desc">Questions stay hidden until clicked. Saved weeks are hidden until opened.</p>
+        </div>
+        <div class="review-accordion" id="reviewGrid"></div>
+        <div class="review-bottom">
+          <button class="btn" id="clearReview">Clear Current Review</button>
+          <button class="btn btn-primary" id="saveReviewBtn">Save Weekly Review</button>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="section-kicker">Past Weekly Reviews</div>
+          <h3>Saved weeks</h3>
+          <div class="week-list" id="reviewHistoryList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="container">
+        <div class="section-header"><div><div class="section-kicker">6-Month Master Plan</div><h2>Six months of gentle compounding.</h2></div></div>
+        <div class="grid" id="monthPlan"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal-card">
+      <div class="modal-head"><div><div class="section-kicker">Daily Tasks</div><h2>Add, edit, or remove tasks</h2></div><button class="icon-btn" id="closeTaskModal">×</button></div>
+      <div class="task-manager-list" id="taskManagerList"></div>
+      <div class="action-row"><button class="btn" id="addTaskRowBtn">Add Task</button><button class="btn btn-primary" id="saveTasksBtn">Save Tasks</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <footer>
+    <div class="container"><strong>Small steady steps can build a nursing future.</strong><p>Built as a soft one-page companion for study, health, fitness, and confidence.</p></div>
+  </footer>
+
+  <script>
+    const NS = "nursingDreamCompanion:";
+    const save = (key, value) => localStorage.setItem(NS + key, JSON.stringify(value));
+    const load = (key, fallback) => { try { const v = localStorage.getItem(NS + key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
+    const today = new Date();
+    const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const todayKey = dateKey(today);
+    const showToast = (msg = "Saved") => { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1400); };
+    const escapeHtml = value => String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+    const defaultDailyTasks = [
+      "Study Biology / nursing topic for 30 minutes",
+      "Revise Chemistry or Physics basics for 20 minutes",
+      "Practice English speaking for 10 minutes",
+      "Move body or walk for 20 minutes",
+      "Check one official/admission update if needed",
+      "Write one mistake or one thing learned"
+    ];
+    let dailyTasks = load("dailyTasks", defaultDailyTasks);
+    let allTaskStates = load("dailyTaskStatesByDate", {});
+    let taskState = allTaskStates[todayKey] || Array(dailyTasks.length).fill(false);
+    taskState = dailyTasks.map((_, i) => Boolean(taskState[i]));
+
+    const paths = {
+      "MNS Path": ["NEET awareness", "Nursing foundation", "Military nursing awareness", "Fitness", "English speaking", "Interview confidence"],
+      "BSc Nursing Path": ["Admission portal tracking", "Biology revision", "Chemistry basics", "Document checklist", "College selection", "Counselling preparation"],
+      "GNM Path": ["Eligibility check", "Application tracking", "Basic nursing foundation", "Communication skills", "Practical care mindset", "Hospital discipline"]
+    };
+
+    const roadmap = [
+      { title: "Level 1: Clarity + Official Awareness", topics: ["Goal selection", "Official notification", "Eligibility", "Age limit", "NEET awareness"], goal: "Know exactly what path and rules to follow." },
+      { title: "Level 2: Nursing Foundation", topics: ["Anatomy basics", "Physiology basics", "First aid", "Hygiene", "Patient care mindset"], goal: "Build basic nursing confidence." },
+      { title: "Level 3: Entrance + Subject Prep", topics: ["Biology", "Chemistry basics", "Physics basics", "Mock questions", "Mistake notebook"], goal: "Create regular question practice." },
+      { title: "Level 4: Fitness + Discipline", topics: ["Walking", "Strength basics", "Posture", "Stamina", "Rest and recovery"], goal: "Become healthier and more consistent." },
+      { title: "Level 5: English + Interview", topics: ["Self introduction", "Why nursing", "Why MNS", "Current affairs", "Confidence practice"], goal: "Speak clearly and calmly." },
+      { title: "Level 6: Application Ready", topics: ["Documents", "Portal tracking", "Counselling", "Medical fitness", "Final review"], goal: "Be ready before deadlines." }
+    ];
+
+    const officialItems = ["Checked official notification", "Checked eligibility", "Checked application date", "Checked NEET requirement if applicable", "Checked age limit", "Checked document list", "Checked counselling/admission portal"];
+    const subjects = ["Biology", "Chemistry", "Physics basics", "English", "General awareness", "Nursing basics", "Fitness"];
+    const noteTopics = ["Anatomy", "Physiology", "First Aid", "Microbiology", "Nutrition", "Patient Care", "Hygiene", "Medical Terms"];
+    const foodItems = ["Breakfast done", "Lunch done", "Dinner done", "Fruits/vegetables", "Protein food", "Enough water", "Avoided junk food"];
+    const interviewItems = ["Self introduction", "Why nursing?", "Why MNS?", "Family background", "Strengths", "Weakness", "Current affairs", "Basic medical awareness"];
+    const documentItems = ["SSLC certificate", "Plus Two certificate", "Transfer certificate", "Conduct certificate", "Caste/community certificate if needed", "Income certificate if needed", "Aadhaar", "Photo", "Signature", "NEET details if required", "Medical fitness documents", "Application printout"];
+    const mockFields = ["Biology questions attempted", "Chemistry questions attempted", "Physics questions attempted", "English questions attempted", "Nursing basics revised", "Mistake notebook updated"];
+    const reviewQuestions = ["What did I study this week?", "What did I improve?", "What distracted me?", "What should I fix next week?", "What workout/health care did I complete?", "What official update/document did I check?", "What mistake did I learn from?", "What is next week’s top priority?"];
+    const months = [
+      ["Month 1", "Profile setup, official awareness, daily tracker, Biology basics, walking routine."],
+      ["Month 2", "Anatomy, Physiology, Chemistry basics, document collection, food/sleep routine."],
+      ["Month 3", "Mock questions, mistake notebook, English speaking, basic fitness consistency."],
+      ["Month 4", "Nursing basics, interview answers, current affairs, application tracking."],
+      ["Month 5", "Strong revision, weekly mock tests, document final check, confidence practice."],
+      ["Month 6", "Final preparation, counselling/application readiness, calm routine, health balance."]
+    ];
+    const workoutPlan = {
+      Monday: ["5 min warm-up", "20 squats", "10 wall push-ups", "20 sec plank", "10 lunges each leg", "5 min stretching"],
+      Tuesday: ["20 min walking", "Shoulder rotation", "Neck stretch", "Back stretch", "Deep breathing"],
+      Wednesday: ["15 squats", "20 sec plank", "10 leg raises", "Cat-cow stretch", "Wall posture hold"],
+      Thursday: ["2 min spot jogging", "20 step-ups", "15 jumping jacks or low-impact march", "Breathing practice", "Stretching"],
+      Friday: ["25 squats", "15 wall push-ups", "20 sec wall sit", "10 lunges each leg", "5 min stretching"],
+      Saturday: ["15 min yoga/stretching", "Deep breathing", "Light walking", "Sleep routine check"],
+      Sunday: ["Light walk", "Body care", "Weekly review", "Plan next week"]
+    };
+
+    function setupCollapses() {
+      document.querySelectorAll(".collapse-card").forEach(card => {
+        card.querySelector(".collapse-head").addEventListener("click", () => card.classList.toggle("open"));
+      });
+    }
+
+    function setupProfile() {
+      const fields = ["profileName","profileGoal","profileYear","profileStatus","profileFocus","profileMinimum"];
+      const data = load("profile", {});
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        el.value = data[id] || "";
+        el.addEventListener("input", () => saveProfile(false));
+        el.addEventListener("change", () => saveProfile(false));
+      });
+      document.getElementById("saveProfileBtn").addEventListener("click", () => { saveProfile(true); });
+      updateHeroProfile();
+    }
+    function saveProfile(toast) {
+      const fields = ["profileName","profileGoal","profileYear","profileStatus","profileFocus","profileMinimum"];
+      const data = {};
+      fields.forEach(id => data[id] = document.getElementById(id).value);
+      save("profile", data);
+      updateHeroProfile();
+      if (toast) showToast("Profile saved");
+    }
+    function updateHeroProfile() {
+      const data = load("profile", {});
+      document.getElementById("heroGoal").textContent = data.profileGoal || "Dream Path";
+      document.getElementById("heroFocus").textContent = data.profileFocus || "Gentle Focus";
+    }
+
+    function renderDailyChecklist() {
+      const wrap = document.getElementById("dailyChecklist");
+      wrap.innerHTML = "";
+      dailyTasks.forEach((task, index) => {
+        const label = document.createElement("label");
+        label.className = "task" + (taskState[index] ? " done" : "");
+        label.innerHTML = `<input type="checkbox" ${taskState[index] ? "checked" : ""}><span>${escapeHtml(task)}</span>`;
+        label.querySelector("input").addEventListener("change", e => {
+          taskState[index] = e.target.checked;
+          saveDailyState();
+          renderDailyChecklist();
+        });
+        wrap.appendChild(label);
+      });
+      updateDailyProgress();
+    }
+    function saveDailyState() { allTaskStates[todayKey] = taskState; save("dailyTaskStatesByDate", allTaskStates); }
+    function updateDailyProgress() {
+      const done = taskState.filter(Boolean).length;
+      const percent = dailyTasks.length ? Math.round(done / dailyTasks.length * 100) : 0;
+      document.getElementById("progressFill").style.width = percent + "%";
+      document.getElementById("progressText").textContent = `${percent}% • ${done}/${dailyTasks.length}`;
+      document.getElementById("heroProgress").textContent = percent + "%";
+      const history = load("dailyProgressHistory", {});
+      history[todayKey] = percent;
+      save("dailyProgressHistory", history);
+      renderMonthChart();
+    }
+    function renderMonthChart() {
+      const chart = document.getElementById("monthChart");
+      const history = load("dailyProgressHistory", {});
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const days = new Date(year, month + 1, 0).getDate();
+      const values = [];
+      chart.innerHTML = "";
+      for (let day = 1; day <= days; day++) {
+        const key = dateKey(new Date(year, month, day));
+        const value = history[key] || 0;
+        values.push(value);
+        const div = document.createElement("div");
+        div.className = "bar-wrap";
+        div.title = `${key}: ${value}%`;
+        div.innerHTML = `<div class="bar ${value === 0 ? "empty" : ""} ${key === todayKey ? "today" : ""}" style="height:${Math.max(value,3)}%"></div><div class="bar-day">${day}</div>`;
+        chart.appendChild(div);
+      }
+      const saved = values.filter(v => v > 0);
+      document.getElementById("chartToday").textContent = (history[todayKey] || 0) + "%";
+      document.getElementById("chartBest").textContent = (saved.length ? Math.max(...saved) : 0) + "%";
+      document.getElementById("chartAverage").textContent = (saved.length ? Math.round(saved.reduce((a,b) => a+b,0) / saved.length) : 0) + "%";
+    }
+
+    let taskDrafts = [];
+    function openTaskManager() { taskDrafts = [...dailyTasks]; renderTaskManager(); document.getElementById("taskModal").classList.add("show"); }
+    function closeTaskManager() { document.getElementById("taskModal").classList.remove("show"); }
+    function renderTaskManager() {
+      const list = document.getElementById("taskManagerList");
+      list.innerHTML = "";
+      taskDrafts.forEach((task, i) => {
+        const row = document.createElement("div");
+        row.className = "task-editor-row";
+        row.innerHTML = `<input value="${escapeHtml(task)}" data-task-input="${i}" placeholder="Task name"><button class="btn btn-danger small-btn" data-remove-task="${i}">Remove</button>`;
+        list.appendChild(row);
+      });
+      document.querySelectorAll("[data-task-input]").forEach(input => input.addEventListener("input", () => taskDrafts[Number(input.dataset.taskInput)] = input.value));
+      document.querySelectorAll("[data-remove-task]").forEach(btn => btn.addEventListener("click", () => { if (taskDrafts.length <= 1) return alert("Keep at least one task."); taskDrafts.splice(Number(btn.dataset.removeTask),1); renderTaskManager(); }));
+    }
+    function setupTaskButtons() {
+      document.getElementById("todayDate").textContent = today.toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+      document.getElementById("saveTodayBtn").addEventListener("click", () => { saveDailyState(); updateDailyProgress(); showToast("Today saved"); });
+      document.getElementById("editTasksBtn").addEventListener("click", openTaskManager);
+      document.getElementById("resetToday").addEventListener("click", () => { taskState = Array(dailyTasks.length).fill(false); saveDailyState(); renderDailyChecklist(); showToast("Today reset"); });
+      document.getElementById("closeTaskModal").addEventListener("click", closeTaskManager);
+      document.getElementById("taskModal").addEventListener("click", e => { if (e.target.id === "taskModal") closeTaskManager(); });
+      document.getElementById("addTaskRowBtn").addEventListener("click", () => { taskDrafts.push("New task"); renderTaskManager(); });
+      document.getElementById("saveTasksBtn").addEventListener("click", () => {
+        const updated = taskDrafts.map(t => String(t).trim()).filter(Boolean);
+        if (!updated.length) return alert("Keep at least one task.");
+        const oldTasks = [...dailyTasks];
+        const oldState = {};
+        oldTasks.forEach((t,i) => { if (!(t in oldState)) oldState[t] = Boolean(taskState[i]); });
+        taskState = updated.map((t,i) => oldTasks[i] === t ? Boolean(taskState[i]) : Boolean(oldState[t]));
+        dailyTasks = updated;
+        save("dailyTasks", dailyTasks);
+        saveDailyState();
+        closeTaskManager();
+        renderDailyChecklist();
+        showToast("Tasks saved");
+      });
+    }
+
+    function renderPaths() {
+      const selected = load("selectedPath", "");
+      const cards = document.getElementById("pathCards");
+      cards.innerHTML = Object.keys(paths).map(name => `<button class="card path-card ${selected === name ? "active" : ""}" data-path="${name}"><h3>${name}</h3><p>${paths[name].slice(0,3).join(" • ")}</p></button>`).join("");
+      document.querySelectorAll("[data-path]").forEach(btn => btn.addEventListener("click", () => { save("selectedPath", btn.dataset.path); renderPaths(); showToast(`${btn.dataset.path} selected`); }));
+      const active = load("selectedPath", "");
+      document.getElementById("pathTitle").textContent = active || "Select a path";
+      document.getElementById("pathFocusList").innerHTML = active ? paths[active].map(i => `<span class="tag">${i}</span>`).join("") : "<p class='section-desc'>Choose MNS, BSc Nursing, or GNM to see the focus list.</p>";
+    }
+
+    function renderRoadmap() {
+      const progress = load("roadmapProgress", {});
+      let done = 0, total = 0;
+      roadmap.forEach((level, li) => level.topics.forEach((_, ti) => { total++; if (progress[`${li}-${ti}`]) done++; }));
+      const percent = total ? Math.round(done/total*100) : 0;
+      const list = document.getElementById("roadmapList");
+      list.innerHTML = `<div class="card" style="margin-left:60px;"><div class="progress-label"><span>Whole Roadmap Progress</span><strong>${percent}% • ${done}/${total}</strong></div><div class="progress-bg"><div class="progress-fill" style="width:${percent}%"></div></div></div>` + roadmap.map((level, li) => {
+        const levelDone = level.topics.filter((_, ti) => progress[`${li}-${ti}`]).length;
+        const levelPercent = Math.round(levelDone / level.topics.length * 100);
+        return `<div class="level"><div class="level-number">${li+1}</div><div class="card"><h3>${level.title}</h3><div class="progress-wrap"><div class="progress-label"><span>Level Progress</span><strong>${levelPercent}% • ${levelDone}/${level.topics.length}</strong></div><div class="progress-bg"><div class="progress-fill" style="width:${levelPercent}%"></div></div></div><div class="topic-grid">${level.topics.map((topic, ti) => `<button class="topic-btn ${progress[`${li}-${ti}`] ? "done" : ""}" data-road-topic="${li}-${ti}">${progress[`${li}-${ti}`] ? "Done" : "Mark"} ${topic}</button>`).join("")}</div><p><strong>Goal:</strong> ${level.goal}</p><button class="btn btn-soft small-btn" data-level-complete="${li}">Mark Level Complete</button></div></div>`;
+      }).join("");
+      document.querySelectorAll("[data-road-topic]").forEach(btn => btn.addEventListener("click", () => { const p = load("roadmapProgress", {}); p[btn.dataset.roadTopic] = !p[btn.dataset.roadTopic]; save("roadmapProgress", p); renderRoadmap(); }));
+      document.querySelectorAll("[data-level-complete]").forEach(btn => btn.addEventListener("click", () => { const p = load("roadmapProgress", {}); const li = Number(btn.dataset.levelComplete); roadmap[li].topics.forEach((_, ti) => p[`${li}-${ti}`] = true); save("roadmapProgress", p); renderRoadmap(); }));
+    }
+
+    function renderChecklist(id, items, key) {
+      const data = load(key, {});
+      const wrap = document.getElementById(id);
+      wrap.innerHTML = "";
+      items.forEach((item, i) => {
+        const label = document.createElement("label");
+        label.className = "task" + (data[i] ? " done" : "");
+        label.innerHTML = `<input type="checkbox" ${data[i] ? "checked" : ""}><span>${item}</span>`;
+        label.querySelector("input").addEventListener("change", e => { data[i] = e.target.checked; save(key, data); renderChecklist(id, items, key); if (key === "food") updateFoodScore(); });
+        wrap.appendChild(label);
+      });
+    }
+
+    function renderSubjectProgress() {
+      const data = load("subjectProgress", {});
+      const wrap = document.getElementById("subjectProgress");
+      wrap.innerHTML = subjects.map(sub => { const val = data[sub] || 0; return `<div class="progress-row"><div class="subject-head"><strong>${sub}</strong><div class="stepper"><button class="btn small-btn" data-sub-dec="${sub}">-</button><strong>${val}%</strong><button class="btn small-btn" data-sub-inc="${sub}">+</button></div></div><div class="progress-bg"><div class="progress-fill" style="width:${val}%"></div></div></div>`; }).join("");
+      document.querySelectorAll("[data-sub-inc]").forEach(btn => btn.addEventListener("click", () => { data[btn.dataset.subInc] = Math.min(100, (data[btn.dataset.subInc] || 0) + 5); save("subjectProgress", data); renderSubjectProgress(); }));
+      document.querySelectorAll("[data-sub-dec]").forEach(btn => btn.addEventListener("click", () => { data[btn.dataset.subDec] = Math.max(0, (data[btn.dataset.subDec] || 0) - 5); save("subjectProgress", data); renderSubjectProgress(); }));
+    }
+
+    function renderNotes() {
+      const data = load("notes", {});
+      const wrap = document.getElementById("notesGrid");
+      wrap.innerHTML = noteTopics.map(topic => `<div class="card note-card"><h3>${topic}</h3><textarea data-note="${topic}" placeholder="Add short note...">${escapeHtml(data[topic]?.text || "")}</textarea><div class="note-actions"><span class="pill ${data[topic]?.revised ? "good" : ""}">${data[topic]?.revised ? "Revised" : "Not revised"}</span><button class="btn small-btn" data-note-revise="${topic}">${data[topic]?.revised ? "Undo" : "Mark Revised"}</button></div></div>`).join("");
+      document.querySelectorAll("[data-note]").forEach(el => el.addEventListener("input", () => { const d = load("notes", {}); d[el.dataset.note] = { ...(d[el.dataset.note] || {}), text: el.value }; save("notes", d); }));
+      document.querySelectorAll("[data-note-revise]").forEach(btn => btn.addEventListener("click", () => { const d = load("notes", {}); const t = btn.dataset.noteRevise; d[t] = { ...(d[t] || {}), revised: !d[t]?.revised }; save("notes", d); renderNotes(); }));
+    }
+
+    function renderWorkout() {
+      const data = load("workout", {});
+      const wrap = document.getElementById("workoutGrid");
+      let done = 0, total = 0;
+      wrap.innerHTML = Object.entries(workoutPlan).map(([day, tasks]) => `<div class="mini-card workout-day"><h3>${day}</h3><div class="checklist">${tasks.map((task, i) => { total++; const k = `${day}-${i}`; if (data[k]) done++; return `<label class="task ${data[k] ? "done" : ""}"><input type="checkbox" data-workout="${k}" ${data[k] ? "checked" : ""}><span>${task}</span></label>`; }).join("")}</div></div>`).join("");
+      const percent = total ? Math.round(done/total*100) : 0;
+      document.getElementById("workoutProgressText").textContent = `${percent}% • ${done}/${total}`;
+      document.getElementById("workoutProgressFill").style.width = percent + "%";
+      document.querySelectorAll("[data-workout]").forEach(el => el.addEventListener("change", () => { const d = load("workout", {}); d[el.dataset.workout] = el.checked; save("workout", d); renderWorkout(); }));
+    }
+
+    function renderSimpleInputs(containerId, fields, key) {
+      const data = load(key, {});
+      const wrap = document.getElementById(containerId);
+      wrap.innerHTML = fields.map(f => `<div class="field"><label>${f.label}</label>${f.type === "textarea" ? `<textarea data-simple="${f.id}" placeholder="${f.placeholder || ""}">${escapeHtml(data[f.id] || "")}</textarea>` : `<input data-simple="${f.id}" type="${f.type || "text"}" value="${escapeHtml(data[f.id] || "")}" placeholder="${f.placeholder || ""}">`}</div>`).join("");
+      wrap.querySelectorAll("[data-simple]").forEach(el => el.addEventListener("input", () => { const d = load(key, {}); d[el.dataset.simple] = el.value; save(key, d); }));
+    }
+
+    function updateFoodScore() {
+      const data = load("food", {});
+      const done = foodItems.filter((_, i) => data[i]).length;
+      const percent = Math.round(done / foodItems.length * 100);
+      document.getElementById("foodScoreText").textContent = `${percent}% • ${done}/${foodItems.length}`;
+      document.getElementById("foodScoreFill").style.width = percent + "%";
+    }
+
+    function renderInterview() {
+      const data = load("interview", {});
+      const wrap = document.getElementById("interviewGrid");
+      wrap.innerHTML = interviewItems.map(item => `<div class="mini-card"><h3>${item}</h3><div class="segmented">${["Not started","Practicing","Confident"].map(status => `<button class="${data[item] === status ? "active" : ""}" data-interview="${item}" data-status="${status}">${status}</button>`).join("")}</div></div>`).join("");
+      document.querySelectorAll("[data-interview]").forEach(btn => btn.addEventListener("click", () => { const d = load("interview", {}); d[btn.dataset.interview] = btn.dataset.status; save("interview", d); renderInterview(); }));
+    }
+
+    function renderMock() {
+      const data = load("mock", {});
+      const wrap = document.getElementById("mockGrid");
+      wrap.innerHTML = mockFields.map((f, i) => `<div class="field"><label>${f}</label><input type="${i < 4 ? "number" : "text"}" data-mock="${i}" value="${escapeHtml(data[i] || "")}" placeholder="${i < 4 ? "0" : "Notes"}"></div>`).join("");
+      const updateTotal = () => { const d = load("mock", {}); const total = [0,1,2,3].reduce((sum, i) => sum + (Number(d[i]) || 0), 0); document.getElementById("mockTotal").textContent = total + " questions"; };
+      wrap.querySelectorAll("[data-mock]").forEach(el => el.addEventListener("input", () => { const d = load("mock", {}); d[el.dataset.mock] = el.value; save("mock", d); updateTotal(); }));
+      updateTotal();
+    }
+
+    function renderMistakes() {
+      const data = load("mistakes", []);
+      const body = document.getElementById("mistakeTable");
+      body.innerHTML = data.length ? data.map((row, i) => `<tr><td><input data-mistake-edit="mistake" data-index="${i}" value="${escapeHtml(row.mistake)}"></td><td><input data-mistake-edit="correct" data-index="${i}" value="${escapeHtml(row.correct)}"></td><td><input data-mistake-edit="topic" data-index="${i}" value="${escapeHtml(row.topic)}"></td><td><select data-mistake-edit="revised" data-index="${i}"><option ${row.revised === "No" ? "selected" : ""}>No</option><option ${row.revised === "Yes" ? "selected" : ""}>Yes</option></select></td><td><button class="btn btn-danger small-btn" data-delete-mistake="${i}">Delete</button></td></tr>`).join("") : `<tr><td colspan="5">No mistakes added yet.</td></tr>`;
+      document.querySelectorAll("[data-mistake-edit]").forEach(el => el.addEventListener("input", () => { const d = load("mistakes", []); d[Number(el.dataset.index)][el.dataset.mistakeEdit] = el.value; save("mistakes", d); }));
+      document.querySelectorAll("[data-delete-mistake]").forEach(btn => btn.addEventListener("click", () => { const d = load("mistakes", []); d.splice(Number(btn.dataset.deleteMistake),1); save("mistakes", d); renderMistakes(); }));
+    }
+    function setupMistakeAdd() {
+      document.getElementById("addMistakeBtn").addEventListener("click", () => {
+        const mistake = document.getElementById("mistakeInput").value.trim();
+        const correct = document.getElementById("correctInput").value.trim();
+        const topic = document.getElementById("topicInput").value.trim();
+        const revised = document.getElementById("revisedInput").value;
+        if (!mistake && !correct && !topic) return alert("Add at least one detail.");
+        const d = load("mistakes", []);
+        d.push({ mistake, correct, topic, revised });
+        save("mistakes", d);
+        ["mistakeInput","correctInput","topicInput"].forEach(id => document.getElementById(id).value = "");
+        document.getElementById("revisedInput").value = "No";
+        renderMistakes();
+        showToast("Mistake added");
+      });
+    }
+
+    function renderReview() {
+      const data = load("weeklyReview", {});
+      const grid = document.getElementById("reviewGrid");
+      grid.innerHTML = reviewQuestions.map((q, i) => `<div class="card review-item"><button class="review-question-btn" data-review-toggle="${i}"><span>${q}</span><span>+</span></button><div class="review-answer-panel"><textarea id="review-${i}" placeholder="Write here...">${escapeHtml(data[i] || "")}</textarea></div></div>`).join("");
+      document.querySelectorAll("[data-review-toggle]").forEach(btn => btn.addEventListener("click", () => { const item = btn.closest(".review-item"); item.classList.toggle("open"); btn.querySelector("span:last-child").textContent = item.classList.contains("open") ? "-" : "+"; }));
+      reviewQuestions.forEach((_, i) => document.getElementById(`review-${i}`).addEventListener("input", e => { const d = load("weeklyReview", {}); d[i] = e.target.value; save("weeklyReview", d); }));
+      renderReviewHistory();
+    }
+    function renderReviewHistory() {
+      const history = load("weeklyReviewHistory", []);
+      const list = document.getElementById("reviewHistoryList");
+      list.innerHTML = history.length ? history.map((entry, i) => `<div class="week-row"><button class="week-toggle" data-week="${i}"><span>${entry.label} • ${entry.date}</span><span>View</span></button><div class="week-details">${reviewQuestions.map((q, qi) => `<div class="week-answer"><strong>${q}</strong><p>${escapeHtml(entry.answers[qi] || "Not written").replaceAll("\n", "<br>")}</p></div>`).join("")}</div></div>`).join("") : `<div class="week-row"><button class="week-toggle"><span>No saved weekly reviews yet</span><span>-</span></button></div>`;
+      document.querySelectorAll("[data-week]").forEach(btn => btn.addEventListener("click", () => { const row = btn.closest(".week-row"); row.classList.toggle("open"); btn.querySelector("span:last-child").textContent = row.classList.contains("open") ? "Hide" : "View"; }));
+    }
+    function setupReviewButtons() {
+      document.getElementById("saveReviewBtn").addEventListener("click", () => {
+        const answers = {};
+        reviewQuestions.forEach((_, i) => answers[i] = document.getElementById(`review-${i}`).value.trim());
+        if (!Object.values(answers).some(Boolean)) return alert("Write at least one answer before saving.");
+        const history = load("weeklyReviewHistory", []);
+        history.push({ label: `Week ${history.length + 1}`, date: new Date().toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }), answers });
+        save("weeklyReviewHistory", history);
+        save("weeklyReview", answers);
+        renderReviewHistory();
+        showToast("Weekly review saved");
+      });
+      document.getElementById("clearReview").addEventListener("click", () => { localStorage.removeItem(NS + "weeklyReview"); renderReview(); showToast("Current review cleared"); });
+    }
+
+    function renderMonthPlan() { document.getElementById("monthPlan").innerHTML = months.map(([m,b]) => `<div class="card"><h3>${m}</h3><p>${b}</p></div>`).join(""); }
+
+    function init() {
+      setupCollapses();
+      setupProfile();
+      setupTaskButtons();
+      renderDailyChecklist();
+      renderPaths();
+      renderRoadmap();
+      renderChecklist("officialChecklist", officialItems, "officialChecklist");
+      renderSubjectProgress();
+      renderNotes();
+      renderWorkout();
+      renderSimpleInputs("healthGrid", [
+        { id:"sleep", label:"Sleep hours", type:"number", placeholder:"Example: 7" },
+        { id:"water", label:"Water intake", placeholder:"Example: 2 litres" },
+        { id:"mood", label:"Mood today", placeholder:"Calm / tired / happy" },
+        { id:"energy", label:"Energy level", placeholder:"Low / medium / high" },
+        { id:"period", label:"Period date notes", type:"textarea", placeholder:"Optional notes" },
+        { id:"pain", label:"Pain level", placeholder:"0-10 or notes" },
+        { id:"food", label:"Food quality", placeholder:"Good / okay / poor" },
+        { id:"skipped", label:"Exercise skipped due to health", placeholder:"Yes / no / reason" }
+      ], "health");
+      renderChecklist("foodChecklist", foodItems, "food");
+      updateFoodScore();
+      renderInterview();
+      renderChecklist("documentChecklist", documentItems, "documents");
+      renderMock();
+      setupMistakeAdd();
+      renderMistakes();
+      renderSimpleInputs("moodGrid", [
+        { id:"mood", label:"Mood today", placeholder:"Example: peaceful" },
+        { id:"confidence", label:"Confidence level", placeholder:"0-10" },
+        { id:"stress", label:"Stress level", placeholder:"0-10" },
+        { id:"energy", label:"Energy level", placeholder:"0-10" },
+        { id:"proud", label:"One thing I am proud of today", type:"textarea", placeholder:"Write one small win" }
+      ], "moodMotivation");
+      renderReview();
+      setupReviewButtons();
+      renderMonthPlan();
+    }
+    init();
+  </script>
+</body>
+</html>
